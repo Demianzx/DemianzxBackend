@@ -11,8 +11,10 @@ public class Tags : EndpointGroupBase
     public override void Map(WebApplication app)
     {
         app.MapGroup(this)
+            .MapGet(GetTags);
+
+        app.MapGroup(this)
             .RequireAuthorization()
-            .MapGet(GetTags)
             .MapPost(CreateTag)
             .MapDelete(DeleteTag, "{id}");
     }

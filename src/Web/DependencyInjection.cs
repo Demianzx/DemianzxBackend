@@ -13,6 +13,22 @@ public static class DependencyInjection
 {
     public static void AddWebServices(this IHostApplicationBuilder builder)
     {
+        builder.Services.AddCors(options =>
+        {
+            options.AddPolicy("CorsPolicy", policyBuilder =>
+            {
+                var allowedOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins")
+                                            .Get<string[]>() ?? Array.Empty<string>();
+
+                policyBuilder
+                    .WithOrigins(allowedOrigins)
+                    .AllowAnyHeader()
+                    .AllowAnyMethod()
+                    .WithExposedHeaders("Content-Disposition")
+                    .AllowCredentials();
+            });
+        });
+
         builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
         builder.Services.AddScoped<IUser, CurrentUser>();
@@ -44,18 +60,11 @@ public static class DependencyInjection
             });
 
             configure.OperationProcessors.Add(new AspNetCoreOperationSecurityScopeProcessor("JWT"));
-
-
         });
-        builder.Services.AddCors(options =>
+        builder.Services.AddAntiforgery(options =>
         {
-            options.AddPolicy("AllowReactApp", policy =>
-            {
-                policy.WithOrigins("http://localhost:3000") 
-                      .AllowAnyHeader()
-                      .AllowAnyMethod()
-                      .AllowCredentials(); 
-            });
+            options.HeaderName = "X-CSRF-TOKEN";
+            options.Cookie.HttpOnly = false;
         });
     }
 

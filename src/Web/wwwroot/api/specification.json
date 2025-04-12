@@ -6,6 +6,19 @@
     "version": "1.0.0"
   },
   "paths": {
+    "/api/AntiforgeryToken": {
+      "get": {
+        "tags": [
+          "AntiforgeryToken"
+        ],
+        "operationId": "GetAntiforgeryToken",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
     "/api/BlogPosts": {
       "get": {
         "tags": [
@@ -54,12 +67,7 @@
               }
             }
           }
-        },
-        "security": [
-          {
-            "JWT": []
-          }
-        ]
+        }
       },
       "post": {
         "tags": [
@@ -96,6 +104,160 @@
             "JWT": []
           }
         ]
+      }
+    },
+    "/api/BlogPosts/public/{slug}": {
+      "get": {
+        "tags": [
+          "BlogPosts"
+        ],
+        "operationId": "GetPublicBlogPostBySlug",
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BlogPostDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/BlogPosts/featured": {
+      "get": {
+        "tags": [
+          "BlogPosts"
+        ],
+        "operationId": "GetFeaturedBlogPosts",
+        "parameters": [
+          {
+            "name": "Count",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/BlogPostDto"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/BlogPosts/\"{id}/view\"": {
+      "get": {
+        "tags": [
+          "BlogPosts"
+        ],
+        "operationId": "IncrementPostViewCount",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/BlogPosts/simplified": {
+      "get": {
+        "tags": [
+          "BlogPosts"
+        ],
+        "operationId": "GetBlogPostsSimplified",
+        "parameters": [
+          {
+            "name": "PageNumber",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          },
+          {
+            "name": "PageSize",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 2
+          },
+          {
+            "name": "CategorySlug",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 3
+          },
+          {
+            "name": "TagSlug",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 4
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedListOfBlogPostSimplifiedDto"
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/api/BlogPosts/{slug}": {
@@ -236,12 +398,7 @@
               }
             }
           }
-        },
-        "security": [
-          {
-            "JWT": []
-          }
-        ]
+        }
       },
       "post": {
         "tags": [
@@ -391,12 +548,7 @@
               }
             }
           }
-        },
-        "security": [
-          {
-            "JWT": []
-          }
-        ]
+        }
       }
     },
     "/api/Comments": {
@@ -470,50 +622,21 @@
         ]
       }
     },
-    "/api/PublicBlogPosts": {
+    "/api/MediaFiles": {
       "get": {
         "tags": [
-          "PublicBlogPosts"
+          "MediaFiles"
         ],
-        "operationId": "GetPublicBlogPosts",
+        "operationId": "GetMediaFiles",
         "parameters": [
           {
-            "name": "PageNumber",
+            "name": "Prefix",
             "in": "query",
-            "required": true,
             "schema": {
-              "type": "integer",
-              "format": "int32"
+              "type": "string",
+              "nullable": true
             },
             "x-position": 1
-          },
-          {
-            "name": "PageSize",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            },
-            "x-position": 2
-          },
-          {
-            "name": "CategorySlug",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "nullable": true
-            },
-            "x-position": 3
-          },
-          {
-            "name": "TagSlug",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "nullable": true
-            },
-            "x-position": 4
           }
         ],
         "responses": {
@@ -522,23 +645,70 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PaginatedListOfBlogPostDto"
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/BlobDto"
+                  }
                 }
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "MediaFiles"
+        ],
+        "operationId": "UploadMediaFile",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary",
+                    "nullable": true
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ]
       }
     },
-    "/api/PublicBlogPosts/{slug}": {
+    "/api/MediaFiles/{blobName}": {
       "get": {
         "tags": [
-          "PublicBlogPosts"
+          "MediaFiles"
         ],
-        "operationId": "GetPublicBlogPostBySlug",
+        "operationId": "GetMediaFile",
         "parameters": [
           {
-            "name": "slug",
+            "name": "blobName",
             "in": "path",
             "required": true,
             "schema": {
@@ -548,71 +718,28 @@
           }
         ],
         "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/BlogPostDto"
-                }
-              }
-            }
-          },
           "404": {
             "description": ""
           }
-        }
-      }
-    },
-    "/api/PublicBlogPosts/featured": {
-      "get": {
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ]
+      },
+      "delete": {
         "tags": [
-          "PublicBlogPosts"
+          "MediaFiles"
         ],
-        "operationId": "GetFeaturedBlogPosts",
+        "operationId": "DeleteMediaFile",
         "parameters": [
           {
-            "name": "Count",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            },
-            "x-position": 1
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/BlogPostDto"
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/PublicBlogPosts/{id}/view": {
-      "post": {
-        "tags": [
-          "PublicBlogPosts"
-        ],
-        "operationId": "IncrementPostViewCount",
-        "parameters": [
-          {
-            "name": "id",
+            "name": "blobName",
             "in": "path",
             "required": true,
             "schema": {
-              "type": "integer",
-              "format": "int32"
+              "type": "string"
             },
             "x-position": 1
           }
@@ -620,54 +747,16 @@
         "responses": {
           "204": {
             "description": ""
+          },
+          "404": {
+            "description": ""
           }
-        }
-      }
-    },
-    "/api/PublicCategories": {
-      "get": {
-        "tags": [
-          "PublicCategories"
-        ],
-        "operationId": "GetPublicCategories",
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/CategoryDto"
-                  }
-                }
-              }
-            }
+        },
+        "security": [
+          {
+            "JWT": []
           }
-        }
-      }
-    },
-    "/api/PublicTags": {
-      "get": {
-        "tags": [
-          "PublicTags"
-        ],
-        "operationId": "GetPublicTags",
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/TagDto"
-                  }
-                }
-              }
-            }
-          }
-        }
+        ]
       }
     },
     "/api/Tags": {
@@ -690,12 +779,7 @@
               }
             }
           }
-        },
-        "security": [
-          {
-            "JWT": []
-          }
-        ]
+        }
       },
       "post": {
         "tags": [
@@ -755,6 +839,400 @@
         "responses": {
           "204": {
             "description": ""
+          },
+          "404": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ]
+      }
+    },
+    "/api/Users/register": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "operationId": "PostApiUsersRegister",
+        "requestBody": {
+          "x-name": "registration",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterRequest"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Users/login": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "operationId": "PostApiUsersLogin",
+        "parameters": [
+          {
+            "name": "useCookies",
+            "in": "query",
+            "schema": {
+              "type": "boolean",
+              "nullable": true
+            },
+            "x-position": 2
+          },
+          {
+            "name": "useSessionCookies",
+            "in": "query",
+            "schema": {
+              "type": "boolean",
+              "nullable": true
+            },
+            "x-position": 3
+          }
+        ],
+        "requestBody": {
+          "x-name": "login",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginRequest"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccessTokenResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Users/refresh": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "operationId": "PostApiUsersRefresh",
+        "requestBody": {
+          "x-name": "refreshRequest",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RefreshRequest"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccessTokenResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Users/confirmEmail": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "operationId": "GetApiUsersConfirmEmail",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 1
+          },
+          {
+            "name": "code",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 2
+          },
+          {
+            "name": "changedEmail",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 3
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/Users/resendConfirmationEmail": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "operationId": "PostApiUsersResendConfirmationEmail",
+        "requestBody": {
+          "x-name": "resendRequest",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResendConfirmationEmailRequest"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/Users/forgotPassword": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "operationId": "PostApiUsersForgotPassword",
+        "requestBody": {
+          "x-name": "resetRequest",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ForgotPasswordRequest"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Users/resetPassword": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "operationId": "PostApiUsersResetPassword",
+        "requestBody": {
+          "x-name": "resetRequest",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResetPasswordRequest"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Users/manage/2fa": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "operationId": "PostApiUsersManage2fa",
+        "requestBody": {
+          "x-name": "tfaRequest",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TwoFactorRequest"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TwoFactorResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ]
+      }
+    },
+    "/api/Users/manage/info": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "operationId": "GetApiUsersManageInfo",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "operationId": "PostApiUsersManageInfo",
+        "requestBody": {
+          "x-name": "infoRequest",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/InfoRequest"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
           },
           "404": {
             "description": ""
@@ -881,6 +1359,59 @@
             "type": "string"
           },
           "slug": {
+            "type": "string"
+          }
+        }
+      },
+      "PaginatedListOfBlogPostSimplifiedDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/BlogPostSimplifiedDto"
+            }
+          },
+          "pageNumber": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalPages": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "hasPreviousPage": {
+            "type": "boolean"
+          },
+          "hasNextPage": {
+            "type": "boolean"
+          }
+        }
+      },
+      "BlogPostSimplifiedDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "title": {
+            "type": "string"
+          },
+          "slug": {
+            "type": "string"
+          },
+          "featuredImageUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "excerpt": {
             "type": "string"
           }
         }
@@ -1041,12 +1572,260 @@
           }
         }
       },
+      "BlobDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "uri": {
+            "type": "string"
+          },
+          "contentType": {
+            "type": "string"
+          },
+          "size": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "created": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
       "CreateTagCommand": {
         "type": "object",
         "additionalProperties": false,
         "properties": {
           "name": {
             "type": "string"
+          }
+        }
+      },
+      "HttpValidationProblemDetails": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ProblemDetails"
+          },
+          {
+            "type": "object",
+            "additionalProperties": {
+              "nullable": true
+            },
+            "properties": {
+              "errors": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        ]
+      },
+      "ProblemDetails": {
+        "type": "object",
+        "additionalProperties": {
+          "nullable": true
+        },
+        "properties": {
+          "type": {
+            "type": "string",
+            "nullable": true
+          },
+          "title": {
+            "type": "string",
+            "nullable": true
+          },
+          "status": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "detail": {
+            "type": "string",
+            "nullable": true
+          },
+          "instance": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "RegisterRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "email": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          }
+        }
+      },
+      "AccessTokenResponse": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "tokenType": {
+            "type": "string"
+          },
+          "accessToken": {
+            "type": "string"
+          },
+          "expiresIn": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "refreshToken": {
+            "type": "string"
+          }
+        }
+      },
+      "LoginRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "email": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          },
+          "twoFactorCode": {
+            "type": "string",
+            "nullable": true
+          },
+          "twoFactorRecoveryCode": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "RefreshRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "refreshToken": {
+            "type": "string"
+          }
+        }
+      },
+      "ResendConfirmationEmailRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "email": {
+            "type": "string"
+          }
+        }
+      },
+      "ForgotPasswordRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "email": {
+            "type": "string"
+          }
+        }
+      },
+      "ResetPasswordRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "email": {
+            "type": "string"
+          },
+          "resetCode": {
+            "type": "string"
+          },
+          "newPassword": {
+            "type": "string"
+          }
+        }
+      },
+      "TwoFactorResponse": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "sharedKey": {
+            "type": "string"
+          },
+          "recoveryCodesLeft": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "recoveryCodes": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "type": "string"
+            }
+          },
+          "isTwoFactorEnabled": {
+            "type": "boolean"
+          },
+          "isMachineRemembered": {
+            "type": "boolean"
+          }
+        }
+      },
+      "TwoFactorRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "enable": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "twoFactorCode": {
+            "type": "string",
+            "nullable": true
+          },
+          "resetSharedKey": {
+            "type": "boolean"
+          },
+          "resetRecoveryCodes": {
+            "type": "boolean"
+          },
+          "forgetMachine": {
+            "type": "boolean"
+          }
+        }
+      },
+      "InfoResponse": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "email": {
+            "type": "string"
+          },
+          "isEmailConfirmed": {
+            "type": "boolean"
+          }
+        }
+      },
+      "InfoRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "newEmail": {
+            "type": "string",
+            "nullable": true
+          },
+          "newPassword": {
+            "type": "string",
+            "nullable": true
+          },
+          "oldPassword": {
+            "type": "string",
+            "nullable": true
           }
         }
       }

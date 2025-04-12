@@ -11,8 +11,10 @@ public class Comments : EndpointGroupBase
     public override void Map(WebApplication app)
     {
         app.MapGroup(this)
+            .MapGet(GetPostComments, "post/{postId}");
+
+        app.MapGroup(this)
             .RequireAuthorization()
-            .MapGet(GetPostComments, "post/{postId}")
             .MapPost(CreateComment)
             .MapDelete(DeleteComment, "{id}");
     }

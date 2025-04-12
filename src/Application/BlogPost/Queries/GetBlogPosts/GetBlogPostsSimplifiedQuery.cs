@@ -1,11 +1,10 @@
-﻿using DemianzxBackend.Application.BlogPosts.Queries.GetBlogPosts;
-using DemianzxBackend.Application.Common.Interfaces;
+﻿using DemianzxBackend.Application.Common.Interfaces;
 using DemianzxBackend.Application.Common.Mappings;
 using DemianzxBackend.Application.Common.Models;
 
-namespace DemianzxBackend.Application.BlogPosts.Queries.GetPublicBlogPosts;
+namespace DemianzxBackend.Application.BlogPosts.Queries.GetBlogPostsSimplified;
 
-public record GetPublicBlogPostsQuery : IRequest<PaginatedList<BlogPostDto>>
+public record GetBlogPostsSimplifiedQuery : IRequest<PaginatedList<BlogPostSimplifiedDto>>
 {
     public int PageNumber { get; init; } = 1;
     public int PageSize { get; init; } = 10;
@@ -13,29 +12,26 @@ public record GetPublicBlogPostsQuery : IRequest<PaginatedList<BlogPostDto>>
     public string? TagSlug { get; init; } = null;
 }
 
-public class GetPublicBlogPostsQueryHandler : IRequestHandler<GetPublicBlogPostsQuery, PaginatedList<BlogPostDto>>
+public class GetBlogPostsSimplifiedQueryHandler : IRequestHandler<GetBlogPostsSimplifiedQuery, PaginatedList<BlogPostSimplifiedDto>>
 {
     private readonly IApplicationDbContext _context;
     private readonly IMapper _mapper;
-    private readonly IIdentityService _identityService;
 
-    public GetPublicBlogPostsQueryHandler(
+    public GetBlogPostsSimplifiedQueryHandler(
         IApplicationDbContext context,
-        IMapper mapper,
-        IIdentityService identityService)
+        IMapper mapper)
     {
         _context = context;
         _mapper = mapper;
-        _identityService = identityService;
     }
 
-    public async Task<PaginatedList<BlogPostDto>> Handle(GetPublicBlogPostsQuery request, CancellationToken cancellationToken)
+    public async Task<PaginatedList<BlogPostSimplifiedDto>> Handle(GetBlogPostsSimplifiedQuery request, CancellationToken cancellationToken)
     {
         var query = _context.BlogPosts
             .AsNoTracking()
-            .Where(p => p.IsPublished); // Only published posts
+            .Where(p => p.IsPublished); // Solo posts publicados
 
-        // Filter by category if provided
+        // Filtrar por categoría si se proporciona
         if (!string.IsNullOrEmpty(request.CategorySlug))
         {
             query = query.Where(p => _context.PostCategories
@@ -43,7 +39,7 @@ public class GetPublicBlogPostsQueryHandler : IRequestHandler<GetPublicBlogPosts
                       _context.Categories.Any(c => c.Id == pc.CategoryId && c.Slug == request.CategorySlug)));
         }
 
-        // Filter by tag if provided
+        // Filtrar por etiqueta si se proporciona
         if (!string.IsNullOrEmpty(request.TagSlug))
         {
             query = query.Where(p => _context.PostTags
@@ -53,14 +49,8 @@ public class GetPublicBlogPostsQueryHandler : IRequestHandler<GetPublicBlogPosts
 
         var posts = await query
             .OrderByDescending(p => p.PublishedDate)
-            .ProjectTo<BlogPostDto>(_mapper.ConfigurationProvider)
+            .ProjectTo<BlogPostSimplifiedDto>(_mapper.ConfigurationProvider)
             .PaginatedListAsync(request.PageNumber, request.PageSize);
-
-        // Get Author name
-        foreach (var post in posts.Items)
-        {
-            post.AuthorName = await _identityService.GetUserNameAsync(post.AuthorId) ?? string.Empty;
-        }
 
         return posts;
     }

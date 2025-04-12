@@ -6,7 +6,7 @@ public class CommentDto
 {
     public int Id { get; init; }
     public string Content { get; init; } = string.Empty;
-    public DateTime Created { get; init; }
+    public DateTimeOffset Created { get; init; }
     public string AuthorId { get; init; } = string.Empty;
     public string AuthorName { get; set; } = string.Empty;
     public int PostId { get; init; }

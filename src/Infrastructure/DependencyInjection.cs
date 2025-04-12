@@ -4,6 +4,7 @@ using DemianzxBackend.Infrastructure.Common;
 using DemianzxBackend.Infrastructure.Data;
 using DemianzxBackend.Infrastructure.Data.Interceptors;
 using DemianzxBackend.Infrastructure.Identity;
+using DemianzxBackend.Infrastructure.Blob;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
@@ -21,6 +22,7 @@ public static class DependencyInjection
 
         builder.Services.AddScoped<ISaveChangesInterceptor, AuditableEntityInterceptor>();
         builder.Services.AddScoped<ISaveChangesInterceptor, DispatchDomainEventsInterceptor>();
+        builder.Services.AddScoped<IBlobStorageService, BlobStorageService>();
         builder.Services.AddScoped<ISlugService, SlugService>();
 
         builder.Services.AddDbContext<ApplicationDbContext>((sp, options) =>
