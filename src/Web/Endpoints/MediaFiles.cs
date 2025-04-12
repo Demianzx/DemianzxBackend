@@ -13,10 +13,14 @@ public class MediaFiles : EndpointGroupBase
     public override void Map(WebApplication app)
     {
         app.MapGroup(this)
+        .RequireAuthorization()
+        .DisableAntiforgery() 
+        .MapPost(UploadMediaFile);
+
+        app.MapGroup(this)
             .RequireAuthorization()
             .MapGet(GetMediaFiles)
             .MapGet(GetMediaFile, "{blobName}")
-            .MapPost(UploadMediaFile)
             .MapDelete(DeleteMediaFile, "{blobName}");
     }
 

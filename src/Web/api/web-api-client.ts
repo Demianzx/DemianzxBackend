@@ -1020,8 +1020,8 @@ export class CommentsClient implements ICommentsClient {
 }
 
 export interface IMediaFilesClient {
-    getMediaFiles(prefix: string | null | undefined): Promise<BlobDto[]>;
     uploadMediaFile(file: FileParameter | null | undefined): Promise<string>;
+    getMediaFiles(prefix: string | null | undefined): Promise<BlobDto[]>;
     getMediaFile(blobName: string): Promise<void>;
     deleteMediaFile(blobName: string): Promise<void>;
 }
@@ -1037,6 +1037,60 @@ export class MediaFilesClient implements IMediaFilesClient {
 
         this.baseUrl = baseUrl ?? "";
 
+    }
+
+    uploadMediaFile(file: FileParameter | null | undefined, cancelToken?: CancelToken): Promise<string> {
+        let url_ = this.baseUrl + "/api/MediaFiles";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = new FormData();
+        if (file !== null && file !== undefined)
+            content_.append("file", file.data, file.fileName ? file.fileName : "file");
+
+        let options_: AxiosRequestConfig = {
+            data: content_,
+            method: "POST",
+            url: url_,
+            headers: {
+                "Accept": "application/json"
+            },
+            cancelToken
+        };
+
+        return this.instance.request(options_).catch((_error: any) => {
+            if (isAxiosError(_error) && _error.response) {
+                return _error.response;
+            } else {
+                throw _error;
+            }
+        }).then((_response: AxiosResponse) => {
+            return this.processUploadMediaFile(_response);
+        });
+    }
+
+    protected processUploadMediaFile(response: AxiosResponse): Promise<string> {
+        const status = response.status;
+        let _headers: any = {};
+        if (response.headers && typeof response.headers === "object") {
+            for (const k in response.headers) {
+                if (response.headers.hasOwnProperty(k)) {
+                    _headers[k] = response.headers[k];
+                }
+            }
+        }
+        if (status === 200) {
+            const _responseText = response.data;
+            let result200: any = null;
+            let resultData200  = _responseText;
+                result200 = resultData200 !== undefined ? resultData200 : <any>null;
+    
+            return Promise.resolve<string>(result200);
+
+        } else if (status !== 200 && status !== 204) {
+            const _responseText = response.data;
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+        }
+        return Promise.resolve<string>(null as any);
     }
 
     getMediaFiles(prefix: string | null | undefined, cancelToken?: CancelToken): Promise<BlobDto[]> {
@@ -1094,60 +1148,6 @@ export class MediaFilesClient implements IMediaFilesClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
         }
         return Promise.resolve<BlobDto[]>(null as any);
-    }
-
-    uploadMediaFile(file: FileParameter | null | undefined, cancelToken?: CancelToken): Promise<string> {
-        let url_ = this.baseUrl + "/api/MediaFiles";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = new FormData();
-        if (file !== null && file !== undefined)
-            content_.append("file", file.data, file.fileName ? file.fileName : "file");
-
-        let options_: AxiosRequestConfig = {
-            data: content_,
-            method: "POST",
-            url: url_,
-            headers: {
-                "Accept": "application/json"
-            },
-            cancelToken
-        };
-
-        return this.instance.request(options_).catch((_error: any) => {
-            if (isAxiosError(_error) && _error.response) {
-                return _error.response;
-            } else {
-                throw _error;
-            }
-        }).then((_response: AxiosResponse) => {
-            return this.processUploadMediaFile(_response);
-        });
-    }
-
-    protected processUploadMediaFile(response: AxiosResponse): Promise<string> {
-        const status = response.status;
-        let _headers: any = {};
-        if (response.headers && typeof response.headers === "object") {
-            for (const k in response.headers) {
-                if (response.headers.hasOwnProperty(k)) {
-                    _headers[k] = response.headers[k];
-                }
-            }
-        }
-        if (status === 200) {
-            const _responseText = response.data;
-            let result200: any = null;
-            let resultData200  = _responseText;
-                result200 = resultData200 !== undefined ? resultData200 : <any>null;
-    
-            return Promise.resolve<string>(result200);
-
-        } else if (status !== 200 && status !== 204) {
-            const _responseText = response.data;
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-        }
-        return Promise.resolve<string>(null as any);
     }
 
     getMediaFile(blobName: string, cancelToken?: CancelToken): Promise<void> {

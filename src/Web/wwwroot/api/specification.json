@@ -623,43 +623,6 @@
       }
     },
     "/api/MediaFiles": {
-      "get": {
-        "tags": [
-          "MediaFiles"
-        ],
-        "operationId": "GetMediaFiles",
-        "parameters": [
-          {
-            "name": "Prefix",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "nullable": true
-            },
-            "x-position": 1
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/BlobDto"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "JWT": []
-          }
-        ]
-      },
       "post": {
         "tags": [
           "MediaFiles"
@@ -688,6 +651,43 @@
               "application/json": {
                 "schema": {
                   "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ]
+      },
+      "get": {
+        "tags": [
+          "MediaFiles"
+        ],
+        "operationId": "GetMediaFiles",
+        "parameters": [
+          {
+            "name": "Prefix",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/BlobDto"
+                  }
                 }
               }
             }
