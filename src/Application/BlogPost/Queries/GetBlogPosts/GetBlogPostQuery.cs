@@ -1,6 +1,8 @@
-﻿using DemianzxBackend.Application.Common.Interfaces;
+﻿using DemianzxBackend.Application.Categories.Queries;
+using DemianzxBackend.Application.Common.Interfaces;
 using DemianzxBackend.Application.Common.Mappings;
 using DemianzxBackend.Application.Common.Models;
+using DemianzxBackend.Application.Tags.Queries;
 
 namespace DemianzxBackend.Application.BlogPosts.Queries.GetBlogPosts;
 
@@ -43,10 +45,31 @@ public class GetBlogPostsQueryHandler : IRequestHandler<GetBlogPostsQuery, Pagin
             .ProjectTo<BlogPostDto>(_mapper.ConfigurationProvider)
             .PaginatedListAsync(request.PageNumber, request.PageSize);
 
-        // Get Author name
         foreach (var post in posts.Items)
         {
             post.AuthorName = await _identityService.GetUserNameAsync(post.AuthorId) ?? string.Empty;
+
+            var categories = await _context.PostCategories
+                .Where(pc => pc.PostId == post.Id)
+                .Select(pc => pc.Category)
+                .ProjectTo<CategoryDto>(_mapper.ConfigurationProvider)
+                .ToListAsync(cancellationToken);
+
+            foreach (var category in categories)
+            {
+                post.Categories.Add(category);
+            }
+
+            var tags = await _context.PostTags
+                .Where(pt => pt.PostId == post.Id)
+                .Select(pt => pt.Tag)
+                .ProjectTo<TagDto>(_mapper.ConfigurationProvider)
+                .ToListAsync(cancellationToken);
+
+            foreach (var tag in tags)
+            {
+                post.Tags.Add(tag);
+            }
         }
 
         return posts;
