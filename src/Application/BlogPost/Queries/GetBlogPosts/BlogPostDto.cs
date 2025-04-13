@@ -13,6 +13,7 @@ public class BlogPostDto
     public string? FeaturedImageUrl { get; init; }
     public DateTime? PublishedDate { get; init; }
     public bool IsPublished { get; init; }
+    public bool IsFeatured { get; init; }
     public string AuthorId { get; init; } = string.Empty;
     public string AuthorName { get; set; } = string.Empty;
     public IList<CategoryDto> Categories { get; init; } = new List<CategoryDto>();

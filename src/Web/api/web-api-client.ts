@@ -2025,6 +2025,7 @@ export class BlogPostDto implements IBlogPostDto {
     featuredImageUrl?: string | undefined;
     publishedDate?: Date | undefined;
     isPublished?: boolean;
+    isFeatured?: boolean;
     authorId?: string;
     authorName?: string;
     categories?: CategoryDto[];
@@ -2048,6 +2049,7 @@ export class BlogPostDto implements IBlogPostDto {
             this.featuredImageUrl = _data["featuredImageUrl"];
             this.publishedDate = _data["publishedDate"] ? new Date(_data["publishedDate"].toString()) : <any>undefined;
             this.isPublished = _data["isPublished"];
+            this.isFeatured = _data["isFeatured"];
             this.authorId = _data["authorId"];
             this.authorName = _data["authorName"];
             if (Array.isArray(_data["categories"])) {
@@ -2079,6 +2081,7 @@ export class BlogPostDto implements IBlogPostDto {
         data["featuredImageUrl"] = this.featuredImageUrl;
         data["publishedDate"] = this.publishedDate ? this.publishedDate.toISOString() : <any>undefined;
         data["isPublished"] = this.isPublished;
+        data["isFeatured"] = this.isFeatured;
         data["authorId"] = this.authorId;
         data["authorName"] = this.authorName;
         if (Array.isArray(this.categories)) {
@@ -2103,6 +2106,7 @@ export interface IBlogPostDto {
     featuredImageUrl?: string | undefined;
     publishedDate?: Date | undefined;
     isPublished?: boolean;
+    isFeatured?: boolean;
     authorId?: string;
     authorName?: string;
     categories?: CategoryDto[];
@@ -2322,6 +2326,7 @@ export class CreateBlogPostCommand implements ICreateBlogPostCommand {
     content?: string;
     featuredImageUrl?: string | undefined;
     isPublished?: boolean;
+    isFeatured?: boolean;
     categoryIds?: number[];
     tagIds?: number[];
 
@@ -2340,6 +2345,7 @@ export class CreateBlogPostCommand implements ICreateBlogPostCommand {
             this.content = _data["content"];
             this.featuredImageUrl = _data["featuredImageUrl"];
             this.isPublished = _data["isPublished"];
+            this.isFeatured = _data["isFeatured"];
             if (Array.isArray(_data["categoryIds"])) {
                 this.categoryIds = [] as any;
                 for (let item of _data["categoryIds"])
@@ -2366,6 +2372,7 @@ export class CreateBlogPostCommand implements ICreateBlogPostCommand {
         data["content"] = this.content;
         data["featuredImageUrl"] = this.featuredImageUrl;
         data["isPublished"] = this.isPublished;
+        data["isFeatured"] = this.isFeatured;
         if (Array.isArray(this.categoryIds)) {
             data["categoryIds"] = [];
             for (let item of this.categoryIds)
@@ -2385,6 +2392,7 @@ export interface ICreateBlogPostCommand {
     content?: string;
     featuredImageUrl?: string | undefined;
     isPublished?: boolean;
+    isFeatured?: boolean;
     categoryIds?: number[];
     tagIds?: number[];
 }
@@ -2395,6 +2403,7 @@ export class UpdateBlogPostCommand implements IUpdateBlogPostCommand {
     content?: string;
     featuredImageUrl?: string | undefined;
     isPublished?: boolean;
+    isFeatured?: boolean;
     categoryIds?: number[];
     tagIds?: number[];
 
@@ -2414,6 +2423,7 @@ export class UpdateBlogPostCommand implements IUpdateBlogPostCommand {
             this.content = _data["content"];
             this.featuredImageUrl = _data["featuredImageUrl"];
             this.isPublished = _data["isPublished"];
+            this.isFeatured = _data["isFeatured"];
             if (Array.isArray(_data["categoryIds"])) {
                 this.categoryIds = [] as any;
                 for (let item of _data["categoryIds"])
@@ -2441,6 +2451,7 @@ export class UpdateBlogPostCommand implements IUpdateBlogPostCommand {
         data["content"] = this.content;
         data["featuredImageUrl"] = this.featuredImageUrl;
         data["isPublished"] = this.isPublished;
+        data["isFeatured"] = this.isFeatured;
         if (Array.isArray(this.categoryIds)) {
             data["categoryIds"] = [];
             for (let item of this.categoryIds)
@@ -2461,6 +2472,7 @@ export interface IUpdateBlogPostCommand {
     content?: string;
     featuredImageUrl?: string | undefined;
     isPublished?: boolean;
+    isFeatured?: boolean;
     categoryIds?: number[];
     tagIds?: number[];
 }

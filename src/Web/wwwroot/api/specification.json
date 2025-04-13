@@ -1294,6 +1294,9 @@
           "isPublished": {
             "type": "boolean"
           },
+          "isFeatured": {
+            "type": "boolean"
+          },
           "authorId": {
             "type": "string"
           },
@@ -1420,6 +1423,9 @@
           "isPublished": {
             "type": "boolean"
           },
+          "isFeatured": {
+            "type": "boolean"
+          },
           "categoryIds": {
             "type": "array",
             "items": {
@@ -1455,6 +1461,9 @@
             "nullable": true
           },
           "isPublished": {
+            "type": "boolean"
+          },
+          "isFeatured": {
             "type": "boolean"
           },
           "categoryIds": {
