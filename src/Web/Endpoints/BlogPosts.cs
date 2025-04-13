@@ -9,6 +9,7 @@ using DemianzxBackend.Application.BlogPosts.Queries.GetBlogPostsSimplified;
 using DemianzxBackend.Application.Common.Models;
 using Microsoft.AspNetCore.Http.HttpResults;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+using DemianzxBackend.Application.BlogPosts.Queries.SearchBlogPosts;
 
 namespace DemianzxBackend.Web.Endpoints;
 
@@ -25,7 +26,8 @@ public class BlogPosts : EndpointGroupBase
             .MapGet(GetPublicBlogPostBySlug, "public/{slug}")
             .MapGet(GetFeaturedBlogPosts, "featured")
             .MapGet(IncrementPostViewCount, "\"{id}/view\"")
-            .MapGet(GetBlogPostsSimplified, "simplified");
+            .MapGet(GetBlogPostsSimplified, "simplified")
+            .MapGet(SearchBlogPosts, "search");
 
         // Protected endpoints (require authorization)
         app.MapGroup(this)
@@ -114,6 +116,11 @@ public class BlogPosts : EndpointGroupBase
     }
 
     public async Task<Ok<PaginatedList<BlogPostSimplifiedDto>>> GetBlogPostsSimplified(ISender sender, [AsParameters] GetBlogPostsSimplifiedQuery query)
+    {
+        var result = await sender.Send(query);
+        return TypedResults.Ok(result);
+    }
+    public async Task<Ok<PaginatedList<BlogPostDto>>> SearchBlogPosts(ISender sender, [AsParameters] SearchBlogPostsQuery query)
     {
         var result = await sender.Send(query);
         return TypedResults.Ok(result);

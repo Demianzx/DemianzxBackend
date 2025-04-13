@@ -18,6 +18,7 @@ export interface IBlogPostsClient {
     getFeaturedBlogPosts(count: number): Promise<BlogPostDto[]>;
     incrementPostViewCount(id: number): Promise<void>;
     getBlogPostsSimplified(pageNumber: number, pageSize: number, categorySlug: string | null | undefined, tagSlug: string | null | undefined): Promise<PaginatedListOfBlogPostSimplifiedDto>;
+    searchBlogPosts(searchText: string | null | undefined, fromDate: Date | null | undefined, toDate: Date | null | undefined, categorySlug: string | null | undefined, tagSlug: string | null | undefined, authorId: string | null | undefined, pageNumber: number, pageSize: number, sortBy: string | null | undefined, sortDirection: string | null | undefined): Promise<PaginatedListOfBlogPostDto>;
     getBlogPostBySlug(slug: string): Promise<BlogPostDto>;
     updateBlogPost(id: number, command: UpdateBlogPostCommand): Promise<void>;
     deleteBlogPost(id: number): Promise<void>;
@@ -368,6 +369,78 @@ export class BlogPostsClient implements IBlogPostsClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
         }
         return Promise.resolve<PaginatedListOfBlogPostSimplifiedDto>(null as any);
+    }
+
+    searchBlogPosts(searchText: string | null | undefined, fromDate: Date | null | undefined, toDate: Date | null | undefined, categorySlug: string | null | undefined, tagSlug: string | null | undefined, authorId: string | null | undefined, pageNumber: number, pageSize: number, sortBy: string | null | undefined, sortDirection: string | null | undefined, cancelToken?: CancelToken): Promise<PaginatedListOfBlogPostDto> {
+        let url_ = this.baseUrl + "/api/BlogPosts/search?";
+        if (searchText !== undefined && searchText !== null)
+            url_ += "SearchText=" + encodeURIComponent("" + searchText) + "&";
+        if (fromDate !== undefined && fromDate !== null)
+            url_ += "FromDate=" + encodeURIComponent(fromDate ? "" + fromDate.toISOString() : "") + "&";
+        if (toDate !== undefined && toDate !== null)
+            url_ += "ToDate=" + encodeURIComponent(toDate ? "" + toDate.toISOString() : "") + "&";
+        if (categorySlug !== undefined && categorySlug !== null)
+            url_ += "CategorySlug=" + encodeURIComponent("" + categorySlug) + "&";
+        if (tagSlug !== undefined && tagSlug !== null)
+            url_ += "TagSlug=" + encodeURIComponent("" + tagSlug) + "&";
+        if (authorId !== undefined && authorId !== null)
+            url_ += "AuthorId=" + encodeURIComponent("" + authorId) + "&";
+        if (pageNumber === undefined || pageNumber === null)
+            throw new Error("The parameter 'pageNumber' must be defined and cannot be null.");
+        else
+            url_ += "PageNumber=" + encodeURIComponent("" + pageNumber) + "&";
+        if (pageSize === undefined || pageSize === null)
+            throw new Error("The parameter 'pageSize' must be defined and cannot be null.");
+        else
+            url_ += "PageSize=" + encodeURIComponent("" + pageSize) + "&";
+        if (sortBy !== undefined && sortBy !== null)
+            url_ += "SortBy=" + encodeURIComponent("" + sortBy) + "&";
+        if (sortDirection !== undefined && sortDirection !== null)
+            url_ += "SortDirection=" + encodeURIComponent("" + sortDirection) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: AxiosRequestConfig = {
+            method: "GET",
+            url: url_,
+            headers: {
+                "Accept": "application/json"
+            },
+            cancelToken
+        };
+
+        return this.instance.request(options_).catch((_error: any) => {
+            if (isAxiosError(_error) && _error.response) {
+                return _error.response;
+            } else {
+                throw _error;
+            }
+        }).then((_response: AxiosResponse) => {
+            return this.processSearchBlogPosts(_response);
+        });
+    }
+
+    protected processSearchBlogPosts(response: AxiosResponse): Promise<PaginatedListOfBlogPostDto> {
+        const status = response.status;
+        let _headers: any = {};
+        if (response.headers && typeof response.headers === "object") {
+            for (const k in response.headers) {
+                if (response.headers.hasOwnProperty(k)) {
+                    _headers[k] = response.headers[k];
+                }
+            }
+        }
+        if (status === 200) {
+            const _responseText = response.data;
+            let result200: any = null;
+            let resultData200  = _responseText;
+            result200 = PaginatedListOfBlogPostDto.fromJS(resultData200);
+            return Promise.resolve<PaginatedListOfBlogPostDto>(result200);
+
+        } else if (status !== 200 && status !== 204) {
+            const _responseText = response.data;
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+        }
+        return Promise.resolve<PaginatedListOfBlogPostDto>(null as any);
     }
 
     getBlogPostBySlug(slug: string, cancelToken?: CancelToken): Promise<BlogPostDto> {
