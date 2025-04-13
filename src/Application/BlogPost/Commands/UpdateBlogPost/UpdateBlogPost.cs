@@ -78,13 +78,33 @@ public class UpdateBlogPostCommandHandler : IRequestHandler<UpdateBlogPostComman
         {
             entity.IsPublished = request.IsPublished;
         }
+        //verfy if categories exists
+        foreach (var categoryId in request.CategoryIds)
+        {
+            bool categoryExists = await _context.Categories
+                .AnyAsync(c => c.Id == categoryId, cancellationToken);
 
-        await _context.SaveChangesAsync(cancellationToken);
+            if (!categoryExists)
+            {
+                throw new NotFoundException(nameof(Category), categoryId.ToString());
+            }
+        }
+        // verify if tags exists
+        foreach (var tagId in request.TagIds)
+        {
+            bool tagExists = await _context.Tags
+                .AnyAsync(t => t.Id == tagId, cancellationToken);
 
-        // Update categories
+            if (!tagExists)
+            {
+                throw new NotFoundException(nameof(Tag), tagId.ToString());
+            }
+        }
+        //update categories
+
         var existingCategories = await _context.PostCategories
-            .Where(pc => pc.PostId == entity.Id)
-            .ToListAsync(cancellationToken);
+        .Where(pc => pc.PostId == entity.Id)
+        .ToListAsync(cancellationToken);
 
         _context.PostCategories.RemoveRange(existingCategories);
 
@@ -99,8 +119,8 @@ public class UpdateBlogPostCommandHandler : IRequestHandler<UpdateBlogPostComman
 
         // Update tags
         var existingTags = await _context.PostTags
-            .Where(pt => pt.PostId == entity.Id)
-            .ToListAsync(cancellationToken);
+        .Where(pt => pt.PostId == entity.Id)
+        .ToListAsync(cancellationToken);
 
         _context.PostTags.RemoveRange(existingTags);
 

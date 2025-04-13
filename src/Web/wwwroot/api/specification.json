@@ -6,19 +6,6 @@
     "version": "1.0.0"
   },
   "paths": {
-    "/api/AntiforgeryToken": {
-      "get": {
-        "tags": [
-          "AntiforgeryToken"
-        ],
-        "operationId": "GetAntiforgeryToken",
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        }
-      }
-    },
     "/api/BlogPosts": {
       "get": {
         "tags": [
