@@ -8,6 +8,7 @@ public class BlogPostSimplifiedDto
     public string Title { get; init; } = string.Empty;
     public string Slug { get; init; } = string.Empty;
     public string? FeaturedImageUrl { get; init; }
+    public string? ThumbnailImageUrl { get; init; }
     public string Excerpt { get; init; } = string.Empty;
 
     private class Mapping : Profile

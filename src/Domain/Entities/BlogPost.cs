@@ -8,6 +8,7 @@ public class BlogPost : BaseAuditableEntity
     public string Content { get; set; } = string.Empty;
     public string Slug { get; set; } = string.Empty;
     public string? FeaturedImageUrl { get; set; }
+    public string? ThumbnailImageUrl { get; set; }
     public DateTime? PublishedDate { get; set; }
     public bool IsPublished { get; set; }
     public string AuthorId { get; set; } = string.Empty;

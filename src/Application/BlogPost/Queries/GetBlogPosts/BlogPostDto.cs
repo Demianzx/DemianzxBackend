@@ -11,6 +11,7 @@ public class BlogPostDto
     public string Slug { get; init; } = string.Empty;
     public string Content { get; init; } = string.Empty;
     public string? FeaturedImageUrl { get; init; }
+    public string? ThumbnailImageUrl { get; init; }
     public DateTime? PublishedDate { get; init; }
     public bool IsPublished { get; init; }
     public bool IsFeatured { get; init; }

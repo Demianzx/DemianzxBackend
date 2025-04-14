@@ -13,6 +13,7 @@ public record UpdateBlogPostCommand : IRequest
     public string Title { get; init; } = string.Empty;
     public string Content { get; init; } = string.Empty;
     public string? FeaturedImageUrl { get; init; }
+    public string? ThumbnailImageUrl { get; init; }
     public bool IsPublished { get; init; }
     public bool IsFeatured { get; init; } = false;
     public List<int> CategoryIds { get; init; } = new List<int>();
@@ -67,6 +68,7 @@ public class UpdateBlogPostCommandHandler : IRequestHandler<UpdateBlogPostComman
         entity.Title = request.Title;
         entity.Content = request.Content;
         entity.FeaturedImageUrl = request.FeaturedImageUrl;
+        entity.ThumbnailImageUrl = request.ThumbnailImageUrl;
         entity.IsFeatured = request.IsFeatured;
 
         // If isn't published then no will be published

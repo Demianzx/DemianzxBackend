@@ -2227,6 +2227,7 @@ export class BlogPostDto implements IBlogPostDto {
     slug?: string;
     content?: string;
     featuredImageUrl?: string | undefined;
+    thumbnailImageUrl?: string | undefined;
     publishedDate?: Date | undefined;
     isPublished?: boolean;
     isFeatured?: boolean;
@@ -2251,6 +2252,7 @@ export class BlogPostDto implements IBlogPostDto {
             this.slug = _data["slug"];
             this.content = _data["content"];
             this.featuredImageUrl = _data["featuredImageUrl"];
+            this.thumbnailImageUrl = _data["thumbnailImageUrl"];
             this.publishedDate = _data["publishedDate"] ? new Date(_data["publishedDate"].toString()) : <any>undefined;
             this.isPublished = _data["isPublished"];
             this.isFeatured = _data["isFeatured"];
@@ -2283,6 +2285,7 @@ export class BlogPostDto implements IBlogPostDto {
         data["slug"] = this.slug;
         data["content"] = this.content;
         data["featuredImageUrl"] = this.featuredImageUrl;
+        data["thumbnailImageUrl"] = this.thumbnailImageUrl;
         data["publishedDate"] = this.publishedDate ? this.publishedDate.toISOString() : <any>undefined;
         data["isPublished"] = this.isPublished;
         data["isFeatured"] = this.isFeatured;
@@ -2308,6 +2311,7 @@ export interface IBlogPostDto {
     slug?: string;
     content?: string;
     featuredImageUrl?: string | undefined;
+    thumbnailImageUrl?: string | undefined;
     publishedDate?: Date | undefined;
     isPublished?: boolean;
     isFeatured?: boolean;
@@ -2478,6 +2482,7 @@ export class BlogPostSimplifiedDto implements IBlogPostSimplifiedDto {
     title?: string;
     slug?: string;
     featuredImageUrl?: string | undefined;
+    thumbnailImageUrl?: string | undefined;
     excerpt?: string;
 
     constructor(data?: IBlogPostSimplifiedDto) {
@@ -2495,6 +2500,7 @@ export class BlogPostSimplifiedDto implements IBlogPostSimplifiedDto {
             this.title = _data["title"];
             this.slug = _data["slug"];
             this.featuredImageUrl = _data["featuredImageUrl"];
+            this.thumbnailImageUrl = _data["thumbnailImageUrl"];
             this.excerpt = _data["excerpt"];
         }
     }
@@ -2512,6 +2518,7 @@ export class BlogPostSimplifiedDto implements IBlogPostSimplifiedDto {
         data["title"] = this.title;
         data["slug"] = this.slug;
         data["featuredImageUrl"] = this.featuredImageUrl;
+        data["thumbnailImageUrl"] = this.thumbnailImageUrl;
         data["excerpt"] = this.excerpt;
         return data;
     }
@@ -2522,6 +2529,7 @@ export interface IBlogPostSimplifiedDto {
     title?: string;
     slug?: string;
     featuredImageUrl?: string | undefined;
+    thumbnailImageUrl?: string | undefined;
     excerpt?: string;
 }
 
@@ -2529,6 +2537,7 @@ export class CreateBlogPostCommand implements ICreateBlogPostCommand {
     title?: string;
     content?: string;
     featuredImageUrl?: string | undefined;
+    thumbnailImageUrl?: string | undefined;
     isPublished?: boolean;
     isFeatured?: boolean;
     categoryIds?: number[];
@@ -2548,6 +2557,7 @@ export class CreateBlogPostCommand implements ICreateBlogPostCommand {
             this.title = _data["title"];
             this.content = _data["content"];
             this.featuredImageUrl = _data["featuredImageUrl"];
+            this.thumbnailImageUrl = _data["thumbnailImageUrl"];
             this.isPublished = _data["isPublished"];
             this.isFeatured = _data["isFeatured"];
             if (Array.isArray(_data["categoryIds"])) {
@@ -2575,6 +2585,7 @@ export class CreateBlogPostCommand implements ICreateBlogPostCommand {
         data["title"] = this.title;
         data["content"] = this.content;
         data["featuredImageUrl"] = this.featuredImageUrl;
+        data["thumbnailImageUrl"] = this.thumbnailImageUrl;
         data["isPublished"] = this.isPublished;
         data["isFeatured"] = this.isFeatured;
         if (Array.isArray(this.categoryIds)) {
@@ -2595,6 +2606,7 @@ export interface ICreateBlogPostCommand {
     title?: string;
     content?: string;
     featuredImageUrl?: string | undefined;
+    thumbnailImageUrl?: string | undefined;
     isPublished?: boolean;
     isFeatured?: boolean;
     categoryIds?: number[];
@@ -2606,6 +2618,7 @@ export class UpdateBlogPostCommand implements IUpdateBlogPostCommand {
     title?: string;
     content?: string;
     featuredImageUrl?: string | undefined;
+    thumbnailImageUrl?: string | undefined;
     isPublished?: boolean;
     isFeatured?: boolean;
     categoryIds?: number[];
@@ -2626,6 +2639,7 @@ export class UpdateBlogPostCommand implements IUpdateBlogPostCommand {
             this.title = _data["title"];
             this.content = _data["content"];
             this.featuredImageUrl = _data["featuredImageUrl"];
+            this.thumbnailImageUrl = _data["thumbnailImageUrl"];
             this.isPublished = _data["isPublished"];
             this.isFeatured = _data["isFeatured"];
             if (Array.isArray(_data["categoryIds"])) {
@@ -2654,6 +2668,7 @@ export class UpdateBlogPostCommand implements IUpdateBlogPostCommand {
         data["title"] = this.title;
         data["content"] = this.content;
         data["featuredImageUrl"] = this.featuredImageUrl;
+        data["thumbnailImageUrl"] = this.thumbnailImageUrl;
         data["isPublished"] = this.isPublished;
         data["isFeatured"] = this.isFeatured;
         if (Array.isArray(this.categoryIds)) {
@@ -2675,6 +2690,7 @@ export interface IUpdateBlogPostCommand {
     title?: string;
     content?: string;
     featuredImageUrl?: string | undefined;
+    thumbnailImageUrl?: string | undefined;
     isPublished?: boolean;
     isFeatured?: boolean;
     categoryIds?: number[];

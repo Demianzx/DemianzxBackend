@@ -11,6 +11,7 @@ public record CreateBlogPostCommand : IRequest<int>
     public string Title { get; init; } = string.Empty;
     public string Content { get; init; } = string.Empty;
     public string? FeaturedImageUrl { get; init; }
+    public string? ThumbnailImageUrl { get; init; }
     public bool IsPublished { get; init; }
     public bool IsFeatured { get; init; } = false;
     public List<int> CategoryIds { get; init; } = new List<int>();
@@ -44,6 +45,7 @@ public class CreateBlogPostCommandHandler : IRequestHandler<CreateBlogPostComman
             Content = request.Content,
             Slug = _slugService.GenerateSlug(request.Title),
             FeaturedImageUrl = request.FeaturedImageUrl,
+            ThumbnailImageUrl = request.ThumbnailImageUrl,
             AuthorId = _user.Id,
             IsPublished = request.IsPublished,
             IsFeatured = request.IsFeatured,

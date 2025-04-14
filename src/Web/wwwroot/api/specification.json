@@ -1495,6 +1495,10 @@
             "type": "string",
             "nullable": true
           },
+          "thumbnailImageUrl": {
+            "type": "string",
+            "nullable": true
+          },
           "publishedDate": {
             "type": "string",
             "format": "date-time",
@@ -1610,6 +1614,10 @@
             "type": "string",
             "nullable": true
           },
+          "thumbnailImageUrl": {
+            "type": "string",
+            "nullable": true
+          },
           "excerpt": {
             "type": "string"
           }
@@ -1626,6 +1634,10 @@
             "type": "string"
           },
           "featuredImageUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "thumbnailImageUrl": {
             "type": "string",
             "nullable": true
           },
@@ -1666,6 +1678,10 @@
             "type": "string"
           },
           "featuredImageUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "thumbnailImageUrl": {
             "type": "string",
             "nullable": true
           },
