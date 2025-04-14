@@ -267,7 +267,7 @@ export class BlogPostsClient implements IBlogPostsClient {
     }
 
     incrementPostViewCount(id: number, cancelToken?: CancelToken): Promise<void> {
-        let url_ = this.baseUrl + "/api/BlogPosts/"{id}/view"";
+        let url_ = this.baseUrl + "/api/BlogPosts/{id}/view";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
         url_ = url_.replace("{id}", encodeURIComponent("" + id));

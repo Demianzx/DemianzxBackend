@@ -27,7 +27,7 @@ public class BlogPosts : EndpointGroupBase
             .MapGet(GetBlogPosts)
             .MapGet(GetPublicBlogPostBySlug, "public/{slug}")
             .MapGet(GetFeaturedBlogPosts, "featured")
-            .MapGet(IncrementPostViewCount, "\"{id}/view\"")
+            .MapGet(IncrementPostViewCount, "{id}/view")
             .MapGet(GetBlogPostsSimplified, "simplified")
             .MapGet(SearchBlogPosts, "search")
             .MapGet(GetRelatedBlogPosts, "{id}/related")

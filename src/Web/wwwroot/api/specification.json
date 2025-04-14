@@ -162,7 +162,7 @@
         }
       }
     },
-    "/api/BlogPosts/\"{id}/view\"": {
+    "/api/BlogPosts/{id}/view": {
       "get": {
         "tags": [
           "BlogPosts"
