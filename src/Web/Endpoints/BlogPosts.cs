@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using DemianzxBackend.Application.BlogPosts.Queries.SearchBlogPosts;
 using DemianzxBackend.Application.BlogPosts.Queries.GetRelatedBlogPosts;
+using DemianzxBackend.Application.BlogPosts.Queries.GetPopularBlogPosts;
 
 namespace DemianzxBackend.Web.Endpoints;
 
@@ -29,7 +30,8 @@ public class BlogPosts : EndpointGroupBase
             .MapGet(IncrementPostViewCount, "\"{id}/view\"")
             .MapGet(GetBlogPostsSimplified, "simplified")
             .MapGet(SearchBlogPosts, "search")
-            .MapGet(GetRelatedBlogPosts, "{id}/related");
+            .MapGet(GetRelatedBlogPosts, "{id}/related")
+            .MapGet(GetPopularBlogPosts, "popular");
 
         // Protected endpoints (require authorization)
         app.MapGroup(this)
@@ -136,6 +138,11 @@ public class BlogPosts : EndpointGroupBase
         if (result == null || !result.Any())
             return TypedResults.NotFound();
 
+        return TypedResults.Ok(result);
+    }
+    public async Task<Ok<List<BlogPostDto>>> GetPopularBlogPosts(ISender sender, [AsParameters] GetPopularBlogPostsQuery query)
+    {
+        var result = await sender.Send(query);
         return TypedResults.Ok(result);
     }
 }

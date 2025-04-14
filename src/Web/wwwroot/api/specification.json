@@ -421,6 +421,41 @@
         }
       }
     },
+    "/api/BlogPosts/popular": {
+      "get": {
+        "tags": [
+          "BlogPosts"
+        ],
+        "operationId": "GetPopularBlogPosts",
+        "parameters": [
+          {
+            "name": "Count",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/BlogPostDto"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/BlogPosts/{slug}": {
       "get": {
         "tags": [
