@@ -1,4 +1,4 @@
-using DemianzxBackend.Application.Common.Interfaces;
+﻿using DemianzxBackend.Application.Common.Interfaces;
 using DemianzxBackend.Application.Common.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -77,5 +77,19 @@ public class IdentityService : IIdentityService
         var result = await _userManager.DeleteAsync(user);
 
         return result.ToApplicationResult();
+    }
+
+    public async Task<(Result Result, string UserId)> CreateUserWithDetailsAsync(string userName, string email, string password)
+    {
+        var user = new ApplicationUser
+        {
+            UserName = userName,
+            Email = email
+        };
+
+        var result = await _userManager.CreateAsync(user, password);
+
+
+        return (result.ToApplicationResult(), user.Id);
     }
 }

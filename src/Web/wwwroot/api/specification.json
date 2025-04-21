@@ -1440,6 +1440,31 @@
           }
         ]
       }
+    },
+    "/api/Users/public/register": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "operationId": "RegisterUser",
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterUserCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
     }
   },
   "components": {
@@ -2047,6 +2072,21 @@
           "oldPassword": {
             "type": "string",
             "nullable": true
+          }
+        }
+      },
+      "RegisterUserCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "userName": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
           }
         }
       }

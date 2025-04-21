@@ -76,6 +76,7 @@ public class MediaFiles : EndpointGroupBase
             ".gif" => "image/gif",
             ".pdf" => "application/pdf",
             ".svg" => "image/svg+xml",
+            ".webp" => "image/webp",
             _ => "application/octet-stream"
         };
     }

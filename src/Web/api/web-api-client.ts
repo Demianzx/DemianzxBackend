@@ -1581,6 +1581,7 @@ export interface IUsersClient {
     postApiUsersManage2fa(tfaRequest: TwoFactorRequest): Promise<TwoFactorResponse>;
     getApiUsersManageInfo(): Promise<InfoResponse>;
     postApiUsersManageInfo(infoRequest: InfoRequest): Promise<InfoResponse>;
+    registerUser(command: RegisterUserCommand): Promise<void>;
 }
 
 export class UsersClient implements IUsersClient {
@@ -2154,6 +2155,54 @@ export class UsersClient implements IUsersClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
         }
         return Promise.resolve<InfoResponse>(null as any);
+    }
+
+    registerUser(command: RegisterUserCommand, cancelToken?: CancelToken): Promise<void> {
+        let url_ = this.baseUrl + "/api/Users/public/register";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(command);
+
+        let options_: AxiosRequestConfig = {
+            data: content_,
+            method: "POST",
+            url: url_,
+            headers: {
+                "Content-Type": "application/json",
+            },
+            cancelToken
+        };
+
+        return this.instance.request(options_).catch((_error: any) => {
+            if (isAxiosError(_error) && _error.response) {
+                return _error.response;
+            } else {
+                throw _error;
+            }
+        }).then((_response: AxiosResponse) => {
+            return this.processRegisterUser(_response);
+        });
+    }
+
+    protected processRegisterUser(response: AxiosResponse): Promise<void> {
+        const status = response.status;
+        let _headers: any = {};
+        if (response.headers && typeof response.headers === "object") {
+            for (const k in response.headers) {
+                if (response.headers.hasOwnProperty(k)) {
+                    _headers[k] = response.headers[k];
+                }
+            }
+        }
+        if (status === 200) {
+            const _responseText = response.data;
+            return Promise.resolve<void>(null as any);
+
+        } else if (status !== 200 && status !== 204) {
+            const _responseText = response.data;
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+        }
+        return Promise.resolve<void>(null as any);
     }
 }
 
@@ -3588,6 +3637,50 @@ export interface IInfoRequest {
     newEmail?: string | undefined;
     newPassword?: string | undefined;
     oldPassword?: string | undefined;
+}
+
+export class RegisterUserCommand implements IRegisterUserCommand {
+    userName?: string;
+    email?: string;
+    password?: string;
+
+    constructor(data?: IRegisterUserCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.userName = _data["userName"];
+            this.email = _data["email"];
+            this.password = _data["password"];
+        }
+    }
+
+    static fromJS(data: any): RegisterUserCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new RegisterUserCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["userName"] = this.userName;
+        data["email"] = this.email;
+        data["password"] = this.password;
+        return data;
+    }
+}
+
+export interface IRegisterUserCommand {
+    userName?: string;
+    email?: string;
+    password?: string;
 }
 
 export interface FileParameter {
