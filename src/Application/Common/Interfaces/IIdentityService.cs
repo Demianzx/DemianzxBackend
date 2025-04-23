@@ -1,4 +1,5 @@
 ﻿using DemianzxBackend.Application.Common.Models;
+using DemianzxBackend.Application.Users.Commands.LoginUser;
 
 namespace DemianzxBackend.Application.Common.Interfaces;
 
@@ -15,4 +16,6 @@ public interface IIdentityService
     Task<Result> DeleteUserAsync(string userId);
 
     Task<(Result Result, string UserId)> CreateUserWithDetailsAsync(string userName, string email, string password);
+
+    Task<LoginResponse> LoginAsync(string userName, string password);
 }
