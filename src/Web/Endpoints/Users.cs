@@ -2,6 +2,7 @@
 using DemianzxBackend.Application.Users.Commands.LoginUser;
 using DemianzxBackend.Infrastructure.Identity;
 using Microsoft.AspNetCore.Http.HttpResults;
+using DemianzxBackend.Application.Users.Commands.ChangePassword;
 
 namespace DemianzxBackend.Web.Endpoints;
 
@@ -13,6 +14,9 @@ public class Users : EndpointGroupBase
             .MapPost(RegisterUser, "register")
             .MapPost(LoginUser, "login");
 
+        app.MapGroup(this)
+            .RequireAuthorization()
+            .MapPost(ChangePassword, "change-password");
     }
 
     public async Task<Results<Ok<LoginResponse>, UnauthorizedHttpResult>> LoginUser(ISender sender, LoginUserCommand command)
@@ -33,5 +37,22 @@ public class Users : EndpointGroupBase
             return Results.Ok();
 
         return Results.BadRequest(result.Errors);
+    }
+
+    public async Task<Results<Ok, UnauthorizedHttpResult, BadRequest<string[]>>> ChangePassword(ISender sender, ChangePasswordCommand command)
+    {
+        try
+        {
+            var result = await sender.Send(command);
+
+            if (result.Succeeded)
+                return TypedResults.Ok();
+
+            return TypedResults.BadRequest(result.Errors);
+        }
+        catch (UnauthorizedAccessException)
+        {
+            return TypedResults.Unauthorized();
+        }
     }
 }

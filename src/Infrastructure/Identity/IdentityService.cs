@@ -176,5 +176,19 @@ public class IdentityService : IIdentityService
             Roles = userRoles.ToList()
         };
     }
+
+    public async Task<Result> ChangePasswordAsync(string userId, string currentPassword, string newPassword)
+    {
+        var user = await _userManager.FindByIdAsync(userId);
+
+        if (user == null)
+        {
+            return Result.Failure(new[] { "Usuario no encontrado." });
+        }
+
+        var changePasswordResult = await _userManager.ChangePasswordAsync(user, currentPassword, newPassword);
+
+        return changePasswordResult.ToApplicationResult();
+    }
 }
 

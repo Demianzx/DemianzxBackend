@@ -18,4 +18,7 @@ public interface IIdentityService
     Task<(Result Result, string UserId)> CreateUserWithDetailsAsync(string userName, string email, string password);
 
     Task<LoginResponse> LoginAsync(string userName, string password);
+
+    Task<Result> ChangePasswordAsync(string userId, string currentPassword, string newPassword);
+
 }
