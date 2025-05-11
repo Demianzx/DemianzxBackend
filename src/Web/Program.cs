@@ -14,18 +14,21 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
+    app.Logger.LogInformation("Running in Development environment");
     await app.InitialiseDatabaseAsync();
 }
 else
 {
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+    app.Logger.LogInformation("Running in Production environment");
+    await ProductionInitializer.InitializeProductionDatabaseAsync(app);
+
+    // The default HSTS value is 30 days
     app.UseHsts();
     app.UseHttpsRedirection();
 }
 app.UseCors("CorsPolicy");
 app.UseHealthChecks("/health");
 app.UseStaticFiles();
-
 app.UseAuthentication();
 app.UseAuthorization();
 app.UseAntiforgery();

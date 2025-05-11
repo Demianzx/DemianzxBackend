@@ -1,0 +1,11 @@
+{
+  "dependencies": {
+    "mssql1": {
+      "serviceConnectorResourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('serviceConnectorResourceGroupName')]/providers/Microsoft.Web/sites/demianzgames/providers/Microsoft.ServiceLinker/linkers/ConnectionStringsDemianzxBackendDb_B558D423ED",
+      "secretStore": "AzureAppSettings",
+      "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('resourceGroupName')]/providers/Microsoft.Sql/servers/demianzx-server/databases/demianzx-games-db",
+      "type": "mssql.azure",
+      "connectionId": "ConnectionStrings:DemianzxBackendDb"
+    }
+  }
+}
