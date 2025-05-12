@@ -25,10 +25,22 @@ public static class DependencyInjection
         builder.Services.AddScoped<IBlobStorageService, BlobStorageService>();
         builder.Services.AddScoped<ISlugService, SlugService>();
 
+        var dbProvider = builder.Configuration.GetValue<string>("DbProvider")?.ToLower() ?? "sqlserver";
+
+
         builder.Services.AddDbContext<ApplicationDbContext>((sp, options) =>
         {
             options.AddInterceptors(sp.GetServices<ISaveChangesInterceptor>());
-            options.UseSqlServer(connectionString);
+
+            if (dbProvider == "postgres")
+            {
+                options.UseNpgsql(connectionString,
+                    npgsqlOptions => npgsqlOptions.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName));
+            }
+            else // Por defecto, usar SQL Server
+            {
+                options.UseSqlServer(connectionString);
+            }
         });
 
 
