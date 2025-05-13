@@ -10,7 +10,7 @@ builder.AddInfrastructureServices();
 builder.AddWebServices();
 
 var app = builder.Build();
-/*
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -26,7 +26,8 @@ else
     app.UseHsts();
     app.UseHttpsRedirection();
 }
-*/
+
+
 app.UseCors("CorsPolicy");
 app.UseHealthChecks("/health");
 app.UseStaticFiles();

@@ -27,7 +27,6 @@ public static class DependencyInjection
 
         var dbProvider = builder.Configuration.GetValue<string>("DbProvider")?.ToLower() ?? "sqlserver";
 
-
         builder.Services.AddDbContext<ApplicationDbContext>((sp, options) =>
         {
             options.AddInterceptors(sp.GetServices<ISaveChangesInterceptor>());
@@ -42,7 +41,6 @@ public static class DependencyInjection
                 options.UseSqlServer(connectionString);
             }
         });
-
 
         builder.Services.AddScoped<IApplicationDbContext>(provider => provider.GetRequiredService<ApplicationDbContext>());
 
