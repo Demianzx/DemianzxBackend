@@ -3,6 +3,7 @@ using DemianzxBackend.Infrastructure.Data;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
+using Microsoft.Extensions.Configuration;
 using Respawn;
 using Testcontainers.MsSql;
 
@@ -37,12 +38,18 @@ public class SqlTestcontainersTestDatabase : ITestDatabase
 
         _connection = new SqlConnection(_connectionString);
 
+        // Crear una configuración para pasar al DbContext
+        var configuration = new ConfigurationBuilder()
+            .AddJsonFile("appsettings.json")
+            .AddEnvironmentVariables()
+            .Build();
+
         var options = new DbContextOptionsBuilder<ApplicationDbContext>()
             .UseSqlServer(_connectionString)
             .ConfigureWarnings(warnings => warnings.Log(RelationalEventId.PendingModelChangesWarning))
             .Options;
 
-        var context = new ApplicationDbContext(options);
+        var context = new ApplicationDbContext(options, configuration);
 
         await context.Database.MigrateAsync();
 

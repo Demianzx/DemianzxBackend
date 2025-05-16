@@ -17,7 +17,7 @@ COPY ["global.json", "global.json"]
 
 RUN dotnet restore "DemianzxBackend.sln"
 
-# Copiar todo el código y compilar
+# Copiar todo el cï¿½digo y compilar
 COPY . .
 WORKDIR "/src"
 RUN dotnet build "DemianzxBackend.sln" -c Release -o /app/build

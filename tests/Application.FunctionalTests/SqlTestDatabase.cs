@@ -11,17 +11,18 @@ namespace DemianzxBackend.Application.FunctionalTests;
 public class SqlTestDatabase : ITestDatabase
 {
     private readonly string _connectionString = null!;
+    private readonly IConfiguration _configuration;
     private SqlConnection _connection = null!;
     private Respawner _respawner = null!;
 
     public SqlTestDatabase()
     {
-        var configuration = new ConfigurationBuilder()
+        _configuration = new ConfigurationBuilder()
             .AddJsonFile("appsettings.json")
             .AddEnvironmentVariables()
             .Build();
 
-        var connectionString = configuration.GetConnectionString("DemianzxBackendDb");
+        var connectionString = _configuration.GetConnectionString("DemianzxBackendDb");
 
         Guard.Against.Null(connectionString);
 
@@ -37,7 +38,8 @@ public class SqlTestDatabase : ITestDatabase
             .ConfigureWarnings(warnings => warnings.Log(RelationalEventId.PendingModelChangesWarning))
             .Options;
 
-        var context = new ApplicationDbContext(options);
+        // Usar la configuración existente
+        var context = new ApplicationDbContext(options, _configuration);
 
         context.Database.EnsureDeleted();
         context.Database.Migrate();
