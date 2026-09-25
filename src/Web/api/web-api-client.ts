@@ -1161,6 +1161,252 @@ export class CommentsClient implements ICommentsClient {
     }
 }
 
+export interface IGamesClient {
+    getGames(pageNumber: number, pageSize: number, categorySlug: string | null | undefined, includeDrafts: boolean): Promise<PaginatedListOfGameSimplifiedDto>;
+    createGame(command: CreateGameCommand): Promise<number>;
+    updateGame(id: number, command: UpdateGameCommand): Promise<void>;
+    deleteGame(id: number): Promise<void>;
+}
+
+export class GamesClient implements IGamesClient {
+    protected instance: AxiosInstance;
+    protected baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(baseUrl?: string, instance?: AxiosInstance) {
+
+        this.instance = instance || axios.create();
+
+        this.baseUrl = baseUrl ?? "";
+
+    }
+
+    getGames(pageNumber: number, pageSize: number, categorySlug: string | null | undefined, includeDrafts: boolean, cancelToken?: CancelToken): Promise<PaginatedListOfGameSimplifiedDto> {
+        let url_ = this.baseUrl + "/api/Games?";
+        if (pageNumber === undefined || pageNumber === null)
+            throw new Error("The parameter 'pageNumber' must be defined and cannot be null.");
+        else
+            url_ += "PageNumber=" + encodeURIComponent("" + pageNumber) + "&";
+        if (pageSize === undefined || pageSize === null)
+            throw new Error("The parameter 'pageSize' must be defined and cannot be null.");
+        else
+            url_ += "PageSize=" + encodeURIComponent("" + pageSize) + "&";
+        if (categorySlug !== undefined && categorySlug !== null)
+            url_ += "CategorySlug=" + encodeURIComponent("" + categorySlug) + "&";
+        if (includeDrafts === undefined || includeDrafts === null)
+            throw new Error("The parameter 'includeDrafts' must be defined and cannot be null.");
+        else
+            url_ += "IncludeDrafts=" + encodeURIComponent("" + includeDrafts) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: AxiosRequestConfig = {
+            method: "GET",
+            url: url_,
+            headers: {
+                "Accept": "application/json"
+            },
+            cancelToken
+        };
+
+        return this.instance.request(options_).catch((_error: any) => {
+            if (isAxiosError(_error) && _error.response) {
+                return _error.response;
+            } else {
+                throw _error;
+            }
+        }).then((_response: AxiosResponse) => {
+            return this.processGetGames(_response);
+        });
+    }
+
+    protected processGetGames(response: AxiosResponse): Promise<PaginatedListOfGameSimplifiedDto> {
+        const status = response.status;
+        let _headers: any = {};
+        if (response.headers && typeof response.headers === "object") {
+            for (const k in response.headers) {
+                if (response.headers.hasOwnProperty(k)) {
+                    _headers[k] = response.headers[k];
+                }
+            }
+        }
+        if (status === 200) {
+            const _responseText = response.data;
+            let result200: any = null;
+            let resultData200  = _responseText;
+            result200 = PaginatedListOfGameSimplifiedDto.fromJS(resultData200);
+            return Promise.resolve<PaginatedListOfGameSimplifiedDto>(result200);
+
+        } else if (status !== 200 && status !== 204) {
+            const _responseText = response.data;
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+        }
+        return Promise.resolve<PaginatedListOfGameSimplifiedDto>(null as any);
+    }
+
+    createGame(command: CreateGameCommand, cancelToken?: CancelToken): Promise<number> {
+        let url_ = this.baseUrl + "/api/Games";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(command);
+
+        let options_: AxiosRequestConfig = {
+            data: content_,
+            method: "POST",
+            url: url_,
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            },
+            cancelToken
+        };
+
+        return this.instance.request(options_).catch((_error: any) => {
+            if (isAxiosError(_error) && _error.response) {
+                return _error.response;
+            } else {
+                throw _error;
+            }
+        }).then((_response: AxiosResponse) => {
+            return this.processCreateGame(_response);
+        });
+    }
+
+    protected processCreateGame(response: AxiosResponse): Promise<number> {
+        const status = response.status;
+        let _headers: any = {};
+        if (response.headers && typeof response.headers === "object") {
+            for (const k in response.headers) {
+                if (response.headers.hasOwnProperty(k)) {
+                    _headers[k] = response.headers[k];
+                }
+            }
+        }
+        if (status === 201) {
+            const _responseText = response.data;
+            let result201: any = null;
+            let resultData201  = _responseText;
+                result201 = resultData201 !== undefined ? resultData201 : <any>null;
+    
+            return Promise.resolve<number>(result201);
+
+        } else if (status !== 200 && status !== 204) {
+            const _responseText = response.data;
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+        }
+        return Promise.resolve<number>(null as any);
+    }
+
+    updateGame(id: number, command: UpdateGameCommand, cancelToken?: CancelToken): Promise<void> {
+        let url_ = this.baseUrl + "/api/Games/{id}";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(command);
+
+        let options_: AxiosRequestConfig = {
+            data: content_,
+            method: "PUT",
+            url: url_,
+            headers: {
+                "Content-Type": "application/json",
+            },
+            cancelToken
+        };
+
+        return this.instance.request(options_).catch((_error: any) => {
+            if (isAxiosError(_error) && _error.response) {
+                return _error.response;
+            } else {
+                throw _error;
+            }
+        }).then((_response: AxiosResponse) => {
+            return this.processUpdateGame(_response);
+        });
+    }
+
+    protected processUpdateGame(response: AxiosResponse): Promise<void> {
+        const status = response.status;
+        let _headers: any = {};
+        if (response.headers && typeof response.headers === "object") {
+            for (const k in response.headers) {
+                if (response.headers.hasOwnProperty(k)) {
+                    _headers[k] = response.headers[k];
+                }
+            }
+        }
+        if (status === 204) {
+            const _responseText = response.data;
+            return Promise.resolve<void>(null as any);
+
+        } else if (status === 400) {
+            const _responseText = response.data;
+            return throwException("A server side error occurred.", status, _responseText, _headers);
+
+        } else if (status === 404) {
+            const _responseText = response.data;
+            return throwException("A server side error occurred.", status, _responseText, _headers);
+
+        } else if (status !== 200 && status !== 204) {
+            const _responseText = response.data;
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    deleteGame(id: number, cancelToken?: CancelToken): Promise<void> {
+        let url_ = this.baseUrl + "/api/Games/{id}";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: AxiosRequestConfig = {
+            method: "DELETE",
+            url: url_,
+            headers: {
+            },
+            cancelToken
+        };
+
+        return this.instance.request(options_).catch((_error: any) => {
+            if (isAxiosError(_error) && _error.response) {
+                return _error.response;
+            } else {
+                throw _error;
+            }
+        }).then((_response: AxiosResponse) => {
+            return this.processDeleteGame(_response);
+        });
+    }
+
+    protected processDeleteGame(response: AxiosResponse): Promise<void> {
+        const status = response.status;
+        let _headers: any = {};
+        if (response.headers && typeof response.headers === "object") {
+            for (const k in response.headers) {
+                if (response.headers.hasOwnProperty(k)) {
+                    _headers[k] = response.headers[k];
+                }
+            }
+        }
+        if (status === 204) {
+            const _responseText = response.data;
+            return Promise.resolve<void>(null as any);
+
+        } else if (status === 404) {
+            const _responseText = response.data;
+            return throwException("A server side error occurred.", status, _responseText, _headers);
+
+        } else if (status !== 200 && status !== 204) {
+            const _responseText = response.data;
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+        }
+        return Promise.resolve<void>(null as any);
+    }
+}
+
 export interface IMediaFilesClient {
     uploadMediaFile(file: FileParameter | null | undefined): Promise<string>;
     getMediaFiles(prefix: string | null | undefined): Promise<BlobDto[]>;
@@ -1830,6 +2076,7 @@ export class BlogPostDto implements IBlogPostDto {
     authorName?: string;
     categories?: CategoryDto[];
     tags?: TagDto[];
+    game?: GameSummaryDto | undefined;
 
     constructor(data?: IBlogPostDto) {
         if (data) {
@@ -1863,6 +2110,7 @@ export class BlogPostDto implements IBlogPostDto {
                 for (let item of _data["tags"])
                     this.tags!.push(TagDto.fromJS(item));
             }
+            this.game = _data["game"] ? GameSummaryDto.fromJS(_data["game"]) : <any>undefined;
         }
     }
 
@@ -1896,6 +2144,7 @@ export class BlogPostDto implements IBlogPostDto {
             for (let item of this.tags)
                 data["tags"].push(item.toJSON());
         }
+        data["game"] = this.game ? this.game.toJSON() : <any>undefined;
         return data;
     }
 }
@@ -1914,6 +2163,7 @@ export interface IBlogPostDto {
     authorName?: string;
     categories?: CategoryDto[];
     tags?: TagDto[];
+    game?: GameSummaryDto | undefined;
 }
 
 export class CategoryDto implements ICategoryDto {
@@ -2006,6 +2256,62 @@ export interface ITagDto {
     id?: number;
     name?: string;
     slug?: string;
+}
+
+export class GameSummaryDto implements IGameSummaryDto {
+    id?: number;
+    blogPostId?: number;
+    embedUrl?: string;
+    aspectRatio?: string | undefined;
+    allowFullScreen?: boolean;
+    instructions?: string | undefined;
+
+    constructor(data?: IGameSummaryDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.blogPostId = _data["blogPostId"];
+            this.embedUrl = _data["embedUrl"];
+            this.aspectRatio = _data["aspectRatio"];
+            this.allowFullScreen = _data["allowFullScreen"];
+            this.instructions = _data["instructions"];
+        }
+    }
+
+    static fromJS(data: any): GameSummaryDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new GameSummaryDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["blogPostId"] = this.blogPostId;
+        data["embedUrl"] = this.embedUrl;
+        data["aspectRatio"] = this.aspectRatio;
+        data["allowFullScreen"] = this.allowFullScreen;
+        data["instructions"] = this.instructions;
+        return data;
+    }
+}
+
+export interface IGameSummaryDto {
+    id?: number;
+    blogPostId?: number;
+    embedUrl?: string;
+    aspectRatio?: string | undefined;
+    allowFullScreen?: boolean;
+    instructions?: string | undefined;
 }
 
 export class PaginatedListOfBlogPostSimplifiedDto implements IPaginatedListOfBlogPostSimplifiedDto {
@@ -2490,6 +2796,270 @@ export interface ICreateCommentCommand {
     content?: string;
     postId?: number;
     parentCommentId?: number | undefined;
+}
+
+export class PaginatedListOfGameSimplifiedDto implements IPaginatedListOfGameSimplifiedDto {
+    items?: GameSimplifiedDto[];
+    pageNumber?: number;
+    totalPages?: number;
+    totalCount?: number;
+    hasPreviousPage?: boolean;
+    hasNextPage?: boolean;
+
+    constructor(data?: IPaginatedListOfGameSimplifiedDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["items"])) {
+                this.items = [] as any;
+                for (let item of _data["items"])
+                    this.items!.push(GameSimplifiedDto.fromJS(item));
+            }
+            this.pageNumber = _data["pageNumber"];
+            this.totalPages = _data["totalPages"];
+            this.totalCount = _data["totalCount"];
+            this.hasPreviousPage = _data["hasPreviousPage"];
+            this.hasNextPage = _data["hasNextPage"];
+        }
+    }
+
+    static fromJS(data: any): PaginatedListOfGameSimplifiedDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new PaginatedListOfGameSimplifiedDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.items)) {
+            data["items"] = [];
+            for (let item of this.items)
+                data["items"].push(item.toJSON());
+        }
+        data["pageNumber"] = this.pageNumber;
+        data["totalPages"] = this.totalPages;
+        data["totalCount"] = this.totalCount;
+        data["hasPreviousPage"] = this.hasPreviousPage;
+        data["hasNextPage"] = this.hasNextPage;
+        return data;
+    }
+}
+
+export interface IPaginatedListOfGameSimplifiedDto {
+    items?: GameSimplifiedDto[];
+    pageNumber?: number;
+    totalPages?: number;
+    totalCount?: number;
+    hasPreviousPage?: boolean;
+    hasNextPage?: boolean;
+}
+
+export class GameSimplifiedDto implements IGameSimplifiedDto {
+    id?: number;
+    embedUrl?: string;
+    aspectRatio?: string | undefined;
+    allowFullScreen?: boolean;
+    instructions?: string | undefined;
+    postId?: number;
+    postTitle?: string;
+    postSlug?: string;
+    postThumbnailImageUrl?: string | undefined;
+    postPublishedDate?: Date | undefined;
+    postIsPublished?: boolean;
+    authorId?: string;
+    authorName?: string;
+    categories?: CategoryDto[];
+
+    constructor(data?: IGameSimplifiedDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.embedUrl = _data["embedUrl"];
+            this.aspectRatio = _data["aspectRatio"];
+            this.allowFullScreen = _data["allowFullScreen"];
+            this.instructions = _data["instructions"];
+            this.postId = _data["postId"];
+            this.postTitle = _data["postTitle"];
+            this.postSlug = _data["postSlug"];
+            this.postThumbnailImageUrl = _data["postThumbnailImageUrl"];
+            this.postPublishedDate = _data["postPublishedDate"] ? new Date(_data["postPublishedDate"].toString()) : <any>undefined;
+            this.postIsPublished = _data["postIsPublished"];
+            this.authorId = _data["authorId"];
+            this.authorName = _data["authorName"];
+            if (Array.isArray(_data["categories"])) {
+                this.categories = [] as any;
+                for (let item of _data["categories"])
+                    this.categories!.push(CategoryDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): GameSimplifiedDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new GameSimplifiedDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["embedUrl"] = this.embedUrl;
+        data["aspectRatio"] = this.aspectRatio;
+        data["allowFullScreen"] = this.allowFullScreen;
+        data["instructions"] = this.instructions;
+        data["postId"] = this.postId;
+        data["postTitle"] = this.postTitle;
+        data["postSlug"] = this.postSlug;
+        data["postThumbnailImageUrl"] = this.postThumbnailImageUrl;
+        data["postPublishedDate"] = this.postPublishedDate ? this.postPublishedDate.toISOString() : <any>undefined;
+        data["postIsPublished"] = this.postIsPublished;
+        data["authorId"] = this.authorId;
+        data["authorName"] = this.authorName;
+        if (Array.isArray(this.categories)) {
+            data["categories"] = [];
+            for (let item of this.categories)
+                data["categories"].push(item.toJSON());
+        }
+        return data;
+    }
+}
+
+export interface IGameSimplifiedDto {
+    id?: number;
+    embedUrl?: string;
+    aspectRatio?: string | undefined;
+    allowFullScreen?: boolean;
+    instructions?: string | undefined;
+    postId?: number;
+    postTitle?: string;
+    postSlug?: string;
+    postThumbnailImageUrl?: string | undefined;
+    postPublishedDate?: Date | undefined;
+    postIsPublished?: boolean;
+    authorId?: string;
+    authorName?: string;
+    categories?: CategoryDto[];
+}
+
+export class CreateGameCommand implements ICreateGameCommand {
+    blogPostId?: number;
+    embedUrl?: string;
+    aspectRatio?: string | undefined;
+    allowFullScreen?: boolean;
+    instructions?: string | undefined;
+
+    constructor(data?: ICreateGameCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.blogPostId = _data["blogPostId"];
+            this.embedUrl = _data["embedUrl"];
+            this.aspectRatio = _data["aspectRatio"];
+            this.allowFullScreen = _data["allowFullScreen"];
+            this.instructions = _data["instructions"];
+        }
+    }
+
+    static fromJS(data: any): CreateGameCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreateGameCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["blogPostId"] = this.blogPostId;
+        data["embedUrl"] = this.embedUrl;
+        data["aspectRatio"] = this.aspectRatio;
+        data["allowFullScreen"] = this.allowFullScreen;
+        data["instructions"] = this.instructions;
+        return data;
+    }
+}
+
+export interface ICreateGameCommand {
+    blogPostId?: number;
+    embedUrl?: string;
+    aspectRatio?: string | undefined;
+    allowFullScreen?: boolean;
+    instructions?: string | undefined;
+}
+
+export class UpdateGameCommand implements IUpdateGameCommand {
+    id?: number;
+    embedUrl?: string;
+    aspectRatio?: string | undefined;
+    allowFullScreen?: boolean;
+    instructions?: string | undefined;
+
+    constructor(data?: IUpdateGameCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.embedUrl = _data["embedUrl"];
+            this.aspectRatio = _data["aspectRatio"];
+            this.allowFullScreen = _data["allowFullScreen"];
+            this.instructions = _data["instructions"];
+        }
+    }
+
+    static fromJS(data: any): UpdateGameCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new UpdateGameCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["embedUrl"] = this.embedUrl;
+        data["aspectRatio"] = this.aspectRatio;
+        data["allowFullScreen"] = this.allowFullScreen;
+        data["instructions"] = this.instructions;
+        return data;
+    }
+}
+
+export interface IUpdateGameCommand {
+    id?: number;
+    embedUrl?: string;
+    aspectRatio?: string | undefined;
+    allowFullScreen?: boolean;
+    instructions?: string | undefined;
 }
 
 export class BlobDto implements IBlobDto {

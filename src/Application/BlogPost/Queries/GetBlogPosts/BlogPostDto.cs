@@ -1,4 +1,5 @@
 ﻿using DemianzxBackend.Application.Categories.Queries;
+using DemianzxBackend.Application.Games.Queries.GetGames;
 using DemianzxBackend.Application.Tags.Queries;
 using DemianzxBackend.Domain.Entities;
 
@@ -19,13 +20,16 @@ public class BlogPostDto
     public string AuthorName { get; set; } = string.Empty;
     public IList<CategoryDto> Categories { get; init; } = new List<CategoryDto>();
     public IList<TagDto> Tags { get; init; } = new List<TagDto>();
+    public GameSummaryDto? Game { get; init; }
 
     private class Mapping : Profile
     {
         public Mapping()
         {
             CreateMap<BlogPost, BlogPostDto>()
-                .ForMember(d => d.AuthorName, opt => opt.Ignore()); // Esto se llenará desde el handler
+                .ForMember(d => d.AuthorName, opt => opt.Ignore()) // Esto se llenará desde el handler
+                .ForMember(d => d.Categories, opt => opt.Ignore()) // Se llena manualmente en el handler
+                .ForMember(d => d.Tags, opt => opt.Ignore()); // Se llena manualmente en el handler
         }
     }
 }

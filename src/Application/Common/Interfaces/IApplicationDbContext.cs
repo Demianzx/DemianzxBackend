@@ -10,6 +10,7 @@ public interface IApplicationDbContext
     DbSet<Comment> Comments { get; }
     DbSet<PostCategory> PostCategories { get; }
     DbSet<PostTag> PostTags { get; }
+    DbSet<Game> Games { get; }
 
     Task<int> SaveChangesAsync(CancellationToken cancellationToken);
 }
