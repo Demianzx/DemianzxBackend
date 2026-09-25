@@ -28,6 +28,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>, IApplica
     public DbSet<Comment> Comments => Set<Comment>();
     public DbSet<PostCategory> PostCategories => Set<PostCategory>();
     public DbSet<PostTag> PostTags => Set<PostTag>();
+    public DbSet<Game> Games => Set<Game>();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

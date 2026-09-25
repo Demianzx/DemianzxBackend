@@ -18,6 +18,7 @@ public class BlogPost : BaseAuditableEntity
 
     // Relations through ORM
     public IList<Comment> Comments { get; private set; } = new List<Comment>();
+    public Game? Game { get; set; }
 
     // Domain Events
     public void MarkAsPublished()

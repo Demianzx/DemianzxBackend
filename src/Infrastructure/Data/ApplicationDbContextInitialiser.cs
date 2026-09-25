@@ -17,9 +17,19 @@ public static class InitialiserExtensions
 
         var initialiser = scope.ServiceProvider.GetRequiredService<ApplicationDbContextInitialiser>();
 
-        await initialiser.InitialiseAsync();
+        try
+        {
+            await initialiser.InitialiseAsync();
 
-        await initialiser.SeedAsync();
+            await initialiser.SeedAsync();
+        }
+        catch (Exception ex)
+        {
+            // Do not prevent the application from starting (e.g. the database is not
+            // reachable yet). Startup tasks like OpenAPI generation must still work,
+            // and the DbContext health check will report the degraded state.
+            app.Logger.LogError(ex, "An error occurred while initialising the database. Database operations will fail until the database becomes available.");
+        }
     }
 }
 

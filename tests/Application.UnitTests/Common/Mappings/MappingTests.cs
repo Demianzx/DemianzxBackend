@@ -4,6 +4,7 @@ using AutoMapper;
 using DemianzxBackend.Application.BlogPosts.Queries.GetBlogPosts;
 using DemianzxBackend.Application.Common.Interfaces;
 using DemianzxBackend.Application.Common.Models;
+using DemianzxBackend.Application.Games.Queries.GetGames;
 using DemianzxBackend.Domain.Entities;
 using NUnit.Framework;
 
@@ -30,6 +31,7 @@ public class MappingTests
 
     [Test]
     [TestCase(typeof(BlogPost), typeof(BlogPostDto))]
+    [TestCase(typeof(Game), typeof(GameSummaryDto))]
     public void ShouldSupportMappingFromSourceToDestination(Type source, Type destination)
     {
         var instance = GetInstanceOf(source);
