@@ -5,7 +5,9 @@ using DemianzxBackend.Infrastructure.Data;
 using DemianzxBackend.Infrastructure.Data.Interceptors;
 using DemianzxBackend.Infrastructure.Identity;
 using DemianzxBackend.Infrastructure.Blob;
+using DemianzxBackend.Infrastructure.Email;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
@@ -61,6 +63,24 @@ public static class DependencyInjection
 
         builder.Services.AddSingleton(TimeProvider.System);
         builder.Services.AddTransient<IIdentityService, IdentityService>();
+        builder.Services.Configure<DataProtectionTokenProviderOptions>(options =>
+            options.TokenLifespan = TimeSpan.FromHours(1));
+        builder.Services.Configure<PasswordRecoveryOptions>(
+            builder.Configuration.GetSection(PasswordRecoveryOptions.SectionName));
+        builder.Services.Configure<SmtpEmailOptions>(
+            builder.Configuration.GetSection(SmtpEmailOptions.SectionName));
+        builder.Services.AddTransient<IEmailSender, SmtpEmailSender>();
+        builder.Services.AddTransient<PasswordRecoveryService>();
+        builder.Services.AddTransient<IPasswordRecoveryService>(sp => sp.GetRequiredService<PasswordRecoveryService>());
+        builder.Services.AddSingleton<PasswordRecoveryQueue>();
+        builder.Services.AddHostedService<PasswordRecoveryWorker>();
+
+        var dataProtection = builder.Services.AddDataProtection().SetApplicationName("DemianzxBackend");
+        var keysPath = builder.Configuration["DataProtection:KeysPath"];
+        if (!string.IsNullOrWhiteSpace(keysPath))
+        {
+            dataProtection.PersistKeysToFileSystem(new DirectoryInfo(keysPath));
+        }
 
         builder.Services.AddAuthorization(options =>
             options.AddPolicy(Policies.CanPurge, policy => policy.RequireRole(Roles.Administrator)));

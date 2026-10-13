@@ -2,6 +2,10 @@
 
 The project was generated using the [Clean.Architecture.Solution.Template](https://github.com/jasontaylordev/CleanArchitecture) version 9.0.8.
 
+## Recuperación de contraseña
+
+La recuperación por correo SMTP y su configuración están documentadas en [docs/password-recovery.md](docs/password-recovery.md).
+
 ## Build
 
 Run `dotnet build -tl` to build the solution.

@@ -1,7 +1,12 @@
 ﻿using System.Text;
 using Azure.Identity;
+using System.Threading.RateLimiting;
+using Microsoft.AspNetCore.RateLimiting;
 using DemianzxBackend.Application.Common.Interfaces;
 using DemianzxBackend.Infrastructure.Data;
+using DemianzxBackend.Infrastructure.Identity;
+using Microsoft.AspNetCore.Identity;
+using System.Security.Claims;
 using DemianzxBackend.Web.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
@@ -15,6 +20,20 @@ public static class DependencyInjection
 {
     public static void AddWebServices(this IHostApplicationBuilder builder)
     {
+        builder.Services.AddRateLimiter(options =>
+        {
+            options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+            options.AddPolicy("PasswordRecovery", context =>
+                RateLimitPartition.GetFixedWindowLimiter(
+                    context.Connection.RemoteIpAddress?.ToString() ?? "unknown",
+                    _ => new FixedWindowRateLimiterOptions
+                    {
+                        PermitLimit = 5,
+                        Window = TimeSpan.FromMinutes(15),
+                        QueueLimit = 0,
+                        AutoReplenishment = true
+                    }));
+        });
         builder.Services.AddCors(options =>
         {
             options.AddPolicy("CorsPolicy", policyBuilder =>
@@ -39,6 +58,21 @@ public static class DependencyInjection
         .AddJwtBearer(options =>
         {
             options.SaveToken = true;
+            options.Events = new JwtBearerEvents
+            {
+                OnTokenValidated = async context =>
+                {
+                    var userId = context.Principal?.FindFirstValue(ClaimTypes.NameIdentifier);
+                    var stamp = context.Principal?.FindFirstValue("security_stamp");
+                    var userManager = context.HttpContext.RequestServices.GetRequiredService<UserManager<ApplicationUser>>();
+                    var user = userId == null ? null : await userManager.FindByIdAsync(userId);
+                    if (user == null || string.IsNullOrEmpty(stamp)
+                        || stamp != await userManager.GetSecurityStampAsync(user))
+                    {
+                        context.Fail("La sesión ya no es válida. Inicia sesión nuevamente.");
+                    }
+                }
+            };
             options.RequireHttpsMetadata = false;
             options.TokenValidationParameters = new TokenValidationParameters
             {

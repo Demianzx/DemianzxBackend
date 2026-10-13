@@ -146,6 +146,7 @@ public class IdentityService : IIdentityService
             new Claim(ClaimTypes.Email, user.Email!),
             new Claim(JwtRegisteredClaimNames.Sub, user.Id),
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+            new Claim("security_stamp", await _userManager.GetSecurityStampAsync(user)),
         };
 
         // Añadir roles a los claims

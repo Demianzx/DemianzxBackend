@@ -17,6 +17,7 @@ public class CustomExceptionHandler : IExceptionHandler
                 { typeof(NotFoundException), HandleNotFoundException },
                 { typeof(UnauthorizedAccessException), HandleUnauthorizedAccessException },
                 { typeof(ForbiddenAccessException), HandleForbiddenAccessException },
+                { typeof(PasswordRecoveryUnavailableException), HandlePasswordRecoveryUnavailableException },
             };
     }
 
@@ -31,6 +32,16 @@ public class CustomExceptionHandler : IExceptionHandler
         }
 
         return false;
+    }
+
+    private static Task HandlePasswordRecoveryUnavailableException(HttpContext httpContext, Exception exception)
+    {
+        httpContext.Response.StatusCode = StatusCodes.Status503ServiceUnavailable;
+        return httpContext.Response.WriteAsJsonAsync(new ProblemDetails
+        {
+            Status = StatusCodes.Status503ServiceUnavailable,
+            Title = exception.Message
+        });
     }
 
     private async Task HandleValidationException(HttpContext httpContext, Exception ex)
